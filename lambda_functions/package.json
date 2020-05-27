@@ -1,0 +1,16 @@
+{
+  "name": "lamba_functions",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha spec/spec.test.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.19.2",
+    "random-username-generator": "^1.0.4"
+  }
+}
