@@ -1,7 +1,6 @@
 "use strict";
 const AWS = require("aws-sdk");
 const crypto = require("crypto");
-const documentClient = new AWS.DynamoDB.DocumentClient();
 const generateUUID = () => crypto.randomBytes(16).toString("hex");
 
 exports.handler = async (event, context) => {
@@ -16,17 +15,22 @@ exports.handler = async (event, context) => {
 
   const parsedBody = JSON.parse(event.body);
 
+  const oldTimeStamp = new Date();
+
+  const newTimeStamp = oldTimeStamp.toUTCString();
+
   const params = {
     TableName: "Independents",
     Key: { username },
-    UpdateExpression: "set comments = list_append(comments, :nc)",
+    UpdateExpression: "set comments = list_append(:nc, comments)",
     ExpressionAttributeValues: {
       ":nc": [
         {
           commentId: generateUUID(),
           username: parsedBody.username,
           body: parsedBody.body,
-          createdAt: Date.now(),
+          createdAt: newTimeStamp,
+          votes: 0,
         },
       ],
     },
@@ -48,7 +52,7 @@ exports.handler = async (event, context) => {
       "Content-Type": "applications/json",
       "Access-Control-Allow-Origin": "*",
     },
-    body: responseBody,
+    body: JSON.stringify(responseBody),
   };
 
   return response;
